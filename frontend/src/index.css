@@ -18,3 +18,11 @@ body {
     color: #fff;
     background-color: #09090b;
 }
+
+.swiper-pagination-bullet{
+    height: 20px !important;
+    width:20px !important;
+}
+ .swiper-pagination-bullets .swiper-pagination-bullet-active {
+    background:#f84565;
+}
