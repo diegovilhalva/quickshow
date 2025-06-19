@@ -1,4 +1,5 @@
 import HeroSection from "../components/HeroSection"
+import TrailerSection from "../components/TrailerSection"
 import FeaturedSection from "./FeaturedSection"
 
 
@@ -7,6 +8,7 @@ const Home = () => {
     <div>
       <HeroSection />
       <FeaturedSection />
+      <TrailerSection />
     </div>
   )
 }
