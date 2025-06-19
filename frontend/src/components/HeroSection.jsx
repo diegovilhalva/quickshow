@@ -9,9 +9,10 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/effect-fade"
+import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
+import { formatRuntime } from "../lib/functions"
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
-const TMDB_BASE_URL = "https://api.themoviedb.org/3"
+
 
 const HeroSection = () => {
   const [movies, setMovies] = useState([])
@@ -40,11 +41,6 @@ const HeroSection = () => {
     fetchMovies()
   }, [])
 
-  const formatRuntime = (min) => {
-    const h = Math.floor(min / 60)
-    const m = min % 60
-    return `${h}h ${m}m`
-  }
 
   if (movies.length === 0) return null
 
