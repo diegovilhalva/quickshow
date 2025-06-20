@@ -26,3 +26,7 @@ body {
  .swiper-pagination-bullets .swiper-pagination-bullet-active {
     background:#f84565;
 }
+
+.no-scrollbar{
+    scrollbar-width: none;
+}
