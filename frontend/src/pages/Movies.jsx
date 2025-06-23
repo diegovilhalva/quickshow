@@ -3,6 +3,7 @@ import axios from "axios"
 import MovieCard from "../components/MovieCard"
 import BlurCircle from "../components/BlurCircle"
 import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
+import MovieCardSkeleton from "../components/MovieCardSkeleton"
 
 const Movies = () => {
   const [movies, setMovies] = useState([])
@@ -16,7 +17,7 @@ const Movies = () => {
     const fetchMovies = async () => {
       setLoading(true)
       try {
-     
+
         const res = await axios.get(`${TMDB_BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=pt-BR&page=${page}`)
         const nowPlaying = res.data.results
         const details = await Promise.all(
@@ -55,7 +56,11 @@ const Movies = () => {
       <h1 className="text-lg font-medium my-4">Os melhores filmes em cartaz</h1>
 
       {loading ? (
-        <p className="text-center my-20">Carregando filmes...</p>
+        <div className="flex flex-wrap max-sm:justify-center gap-8 mt-10">
+          {Array(8).fill(0).map((_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </div>
       ) : movies.length > 0 ? (
         <>
           <div className="flex flex-wrap max-sm:justify-center gap-8">

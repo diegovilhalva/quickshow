@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
 import BlurCircle from "../components/BlurCircle"
 import { Heart, PlayCircleIcon, StarIcon } from "lucide-react"
@@ -13,8 +13,9 @@ import MovieDetailsSkeleton from "../components/MovieDetailsSkeleton"
 const MovieDetails = () => {
   const { id } = useParams()
   const [movie, setMovie] = useState({})
+  const navigate = useNavigate()
   const [recommendedMovies, setRecommendedMovies] = useState([]);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     (async function fetchMovie() {
       try {
@@ -24,7 +25,7 @@ const MovieDetails = () => {
         setMovie(res.data)
       } catch (error) {
         console.log(error)
-      }finally{
+      } finally {
         setLoading(false)
       }
     })()
@@ -115,6 +116,11 @@ const MovieDetails = () => {
         {recommendedMovies.map((movie) => (
           <MovieCard movie={movie} key={movie.id} />
         ))}
+      </div>
+      <div className="flex justify-center mt-20">
+        <button className="px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer" onClick={() => navigate("/movies")}>
+          Ver Mais
+        </button>
       </div>
     </div>
   )
