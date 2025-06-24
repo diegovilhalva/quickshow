@@ -26,7 +26,7 @@ const MyBookings = () => {
       </div>
       <h1 className="text-lg font-semibold mb-4">Meus Ingressos</h1>
       {bookings.map((booking) => (
-        <div key={booking.id} className="flex flwex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl">
+        <div key={booking.id} className="flex flex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl">
           <div className="flex flex-col md:flex-row">
             <img src={booking.show.movie.poster_path} alt={booking.show.movie.title} className="md:max-w-45 aspect-ratio h-auto object-cover object-bottom rounded" />
             <div className="flex flex-col p-4">
@@ -42,13 +42,17 @@ const MyBookings = () => {
           </div>
           <div className="flex flex-col md:items-end md:text-right justify-between p-4">
             <div className="flex items-center gap-4">
-              <p className="text-2xl font-semibold mb-3">{currency}{booking.amount}</p>
-              {!booking.isPaid && <button className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer ">Pagar</button>}
+              {booking.isPaid ? (
+                <span className="text-green-500 font-medium">Pago</span>
+              ) : (
+                <button className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">Pagar</button>
+              )}
+
             </div>
             <div className="text-sm">
               <p><span className="text-gray-400">Total de ingressos:</span> {booking.bookedSeats.length}</p>
-              <p><span className="text-gray-400">Númedos dos  assentos: </span>
-              {booking.bookedSeats.join(", ")}</p>
+              <p><span className="text-gray-400">Números dos assentos: </span>
+                {booking.bookedSeats.join(", ")}</p>
             </div>
           </div>
         </div>
