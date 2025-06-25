@@ -1,4 +1,4 @@
-  {
+{
     "version": 2,
     "builds": [
         {
@@ -16,5 +16,8 @@
             "src": "/(.*)",
             "dest": "index.js"
         }
-    ]
+    ],
+    "git": {
+        "deploymentEnabled": false
+    }
 }

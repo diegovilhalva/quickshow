@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express'
+import showRoutes from "./routes/showRoutes.js"
 import "dotenv/config";
 import connectDB from "./config/db.js";
 import { inngest, functions } from "./inngest/index.js";
@@ -16,7 +17,9 @@ app.use(clerkMiddleware())
 app.get("/", (req, res) => {
   res.send("Servidor OK");
 });
-app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/inngest", serve({ client: inngest, functions }))
+app.use("/api/show", showRoutes)
+
 const startServer = async () => {
   try {
     await connectDB();
