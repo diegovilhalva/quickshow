@@ -12,10 +12,12 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "@clerk/express": "^1.7.1",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "inngest": "^3.39.2",
     "mongoose": "^8.16.0"
   },
   "devDependencies": {
