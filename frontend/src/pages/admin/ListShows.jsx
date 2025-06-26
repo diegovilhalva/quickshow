@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { dummyShowsData } from '../../assets/assets';
 import Loading from '../../components/Loading';
 import Title from '../../components/admin/Title';
-
+import axios from "axios"
+import { apiEndpoint } from '../../lib/constants';
 const ListShows = () => {
   const currency = import.meta.env.VITE_CURRENCY
   const [shows, setShows] = useState([]);
@@ -10,16 +11,8 @@ const ListShows = () => {
   const getAllShows = async () => {
     try {
 
-      setShows([{
-        movie: dummyShowsData[0],
-        showDateTime: "2025-06-30T02:30:00.0002",
-        showPrice: 59,
-        occupiedSeats: {
-          A1: "user_1",
-          B1: "user_2",
-          C1: "user_3"
-        }
-      }]);
+      const res = await axios.get(`${apiEndpoint}/show/all`)
+      setShows(res.data.shows)
       setLoading(false);
 
     } catch (error) {
@@ -30,6 +23,7 @@ const ListShows = () => {
   useEffect(() => {
     getAllShows();
   }, []);
+  console.log(shows)
   return !loading ? (
     <div>
       <Title text1="Total de" text2="Sessões" />
@@ -46,14 +40,14 @@ const ListShows = () => {
           <tbody className='text-sm font-light'>
              {shows.map((show,index)=>(
                     <tr key={index} className='border-b border-primary/10 bg-primary/5 even:bg-primary/10'>
-                        <td className='p-2 min-w-45 pl-5'>{show.movie.title}</td>
+                        <td className='p-2 min-w-45 pl-5'>{show.movie?.title}</td>
                         <td className='p-2'>{new Date(show.showDateTime).toLocaleDateString()} {new Date(show.showDateTime).toLocaleTimeString("pt-BR",{
                           hour12:false,
                           hour:"2-digit",
                           minute:"2-digit"
                         })}</td>
-                        <td className='p-2'>{Object.keys(show.occupiedSeats).length}</td>
-                        <td className='p-2'>{currency} {Object.keys(show.occupiedSeats).length*show.showPrice}</td>
+                        <td className='p-2'>{show.seatsBooked}</td>
+                        <td className='p-2'>{currency} {Object.keys(show.seatsBooked).length*show.showPrice}</td>
                     </tr>
                 )
 

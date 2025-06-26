@@ -4,12 +4,12 @@ import Loading from '../../components/Loading';
 import { CheckIcon, DeleteIcon, StarIcon } from 'lucide-react';
 import { kConverter } from '../../lib/KConverter';
 import axios from 'axios';
-import { API_KEY, TMDB_BASE_URL } from '../../lib/constants';
+import { API_KEY, apiEndpoint, TMDB_BASE_URL } from '../../lib/constants';
 import toast from 'react-hot-toast';
 
 const AddShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
-  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT
+
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [dateTimeSelection, setDateTimeSelection] = useState({});
@@ -37,8 +37,20 @@ const AddShows = () => {
 
   const handleDateTimeAdd = () => {
     if (!dateTimeInput) return;
-    const [date, time] = dateTimeInput.split('T');
-    if (!date || !time) return;
+
+    // Cria um objeto Date a partir do input (já considera o fuso local)
+    const localDateTime = new Date(dateTimeInput);
+
+    // Formata a data como YYYY-MM-DD no fuso local
+    const date = localDateTime.toLocaleDateString('en-CA'); // Formato ISO (YYYY-MM-DD)
+
+    // Formata a hora como HH:MM no fuso local
+    const time = localDateTime.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+
     setDateTimeSelection(prev => {
       const times = prev[date] || [];
       if (!times.includes(time)) return { ...prev, [date]: [...times, time] };
@@ -98,11 +110,10 @@ const AddShows = () => {
             {nowPlayingMovies.map(movie => (
               <div
                 key={movie.id}
-                className={`w-40 cursor-pointer p-1 rounded-lg transition ${
-                  selectedMovie === movie.id
-                    ? 'ring-2 ring-primary'
-                    : 'hover:ring-1 hover:ring-primary/50'
-                }`}
+                className={`w-40 cursor-pointer p-1 rounded-lg transition ${selectedMovie === movie.id
+                  ? 'ring-2 ring-primary'
+                  : 'hover:ring-1 hover:ring-primary/50'
+                  }`}
                 onClick={() => setSelectedMovie(movie.id)}
               >
                 <img
@@ -162,7 +173,9 @@ const AddShows = () => {
           <div className="space-y-2">
             {Object.entries(dateTimeSelection).map(([date, times]) => (
               <div key={date}>
-                <div className="font-semibold">{new Date(date).toLocaleDateString('pt-BR')}</div>
+                <div className="font-semibold">
+                  {date.split('-').reverse().join('/')} {/* Formata para DD/MM/YYYY */}
+                </div>
                 <div className="flex gap-2 mt-1">
                   {times.map(time => (
                     <div
@@ -186,9 +199,8 @@ const AddShows = () => {
       <button
         disabled={submitting}
         onClick={handleAddShow}
-        className={`mt-8 px-6 py-2 rounded-md text-white ${
-          submitting ? 'bg-gray-600 cursor-not-allowed' : 'bg-primary hover:bg-primary-dull'
-        }`}
+        className={`mt-8 px-6 py-2 rounded-md text-white ${submitting ? 'bg-gray-600 cursor-not-allowed' : 'bg-primary hover:bg-primary-dull'
+          }`}
       >
         {submitting ? 'Salvando...' : 'Add Show'}
       </button>
