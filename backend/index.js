@@ -3,6 +3,7 @@ import cors from "cors";
 import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express'
 import showRoutes from "./routes/showRoutes.js"
+import bookingRoutes from "./routes/bookingRoutes.js"
 import "dotenv/config";
 import connectDB from "./config/db.js";
 import { inngest, functions } from "./inngest/index.js";
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/inngest", serve({ client: inngest, functions }))
 app.use("/api/show", showRoutes)
+app.use("/api/booking", bookingRoutes)
 
 const startServer = async () => {
   try {
