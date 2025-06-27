@@ -4,6 +4,7 @@ import { serve } from "inngest/express";
 import { clerkMiddleware } from '@clerk/express'
 import showRoutes from "./routes/showRoutes.js"
 import bookingRoutes from "./routes/bookingRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
 import "dotenv/config";
 import connectDB from "./config/db.js";
 import { inngest, functions } from "./inngest/index.js";
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 app.use("/api/inngest", serve({ client: inngest, functions }))
 app.use("/api/show", showRoutes)
 app.use("/api/booking", bookingRoutes)
+app.use("/api/admin", adminRoutes)
 
 const startServer = async () => {
   try {
