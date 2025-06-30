@@ -71,11 +71,13 @@ export const addShow = async (req, res) => {
 
 export const getShows = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
 
-        const allShows = await Show.find({ showDateTime: { $gte: new Date()  } })
+        const allShows = await Show.find({ showDateTime: { $gte: new Date() } })
             .populate("movie")
             .sort({ showDateTime: 1 });
-
 
         const map = new Map();
         allShows.forEach((show) => {
@@ -85,23 +87,26 @@ export const getShows = async (req, res) => {
                     movie: show.movie,
                     seatsBooked: Object.keys(show.occupiedSeats).length,
                     showPrice: show.showPrice,
-                    showDateTime:show.showDateTime
+                    showDateTime: show.showDateTime
                 });
             }
         });
 
-
-
         const uniqueShows = Array.from(map.values());
+        const paginated = uniqueShows.slice(skip, skip + limit);
+        const totalPages = Math.ceil(uniqueShows.length / limit);
 
-        return res.status(200).json({ success: true, shows: uniqueShows });
+        return res.status(200).json({
+            success: true,
+            shows: paginated,
+            totalPages
+        });
     } catch (error) {
         console.error("Erro ao buscar shows:", error);
-        return res
-            .status(500)
-            .json({ success: false, message: "Erro interno, tente novamente." });
+        return res.status(500).json({ success: false, message: "Erro interno." });
     }
 };
+
 
 /*
 export const getShows = async (req, res) => {
@@ -126,7 +131,7 @@ export const getShow = async (req, res) => {
         const shows = await Show.find({ movie: movieId, showDateTime: { $gte: new Date() } })
 
         const movie = await Movie.findById(movieId)
-
+        
         const dateTime = {}
 
         shows.forEach((show) => {

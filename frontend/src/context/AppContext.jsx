@@ -16,6 +16,7 @@ export const AppProvider = ({ children }) => {
     const { user } = useUser()
     const { getToken } = useAuth()
     const location = useLocation()
+    const [totalPages, setTotalPages] = useState(1)
     const navigate = useNavigate()
     const fetchIsAdmin = async () => {
         try {
@@ -44,11 +45,12 @@ export const AppProvider = ({ children }) => {
     }
 
 
-    const fetchShows = async () => {
+    const fetchShows = async (page = 1, limit = 8) => {
         try {
-            const { data } = await axios.get(`${apiEndpoint}/show/all`)
+            const { data } = await axios.get(`${apiEndpoint}/show/all?page=${page}&limit=${limit}`)
             if (data.success) {
                 setShows(data.shows)
+                setTotalPages(data.totalPages)
             } else {
                 toast.error(data.message)
             }
@@ -56,6 +58,7 @@ export const AppProvider = ({ children }) => {
             console.log(error)
         }
     }
+
 
     const fetchFavoriteMovies = async () => {
         try {
@@ -94,7 +97,9 @@ export const AppProvider = ({ children }) => {
         isAdmin,
         shows,
         favoriteMovies,
-        fetchFavoriteMovies
+        fetchFavoriteMovies,
+        fetchShows,
+        totalPages
     }
     return (
         <AppContext.Provider value={value}>

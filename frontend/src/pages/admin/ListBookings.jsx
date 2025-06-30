@@ -2,22 +2,40 @@ import { useEffect, useState } from "react";
 import { dummyBookingData } from "../../assets/assets";
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
+import axios from "axios";
+import { apiEndpoint } from "../../lib/constants";
+import { useAuth } from "@clerk/clerk-react";
+import { userAppContext } from "../../context/AppContext";
 
 
 const ListBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY
-
+  const { user } = userAppContext()
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { getToken } = useAuth()
   const getAllBookings = async () => {
-    setBookings(dummyBookingData)
-    setIsLoading(false);
+    try {
+      const res = await axios.get(`${apiEndpoint}/admin/all-bookings`, {
+        headers: {
+          Authorization: `${await getToken()}`
+        }
+      })
+
+      if (res.data.success) {
+        setBookings(res.data.bookings)
+      }
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   useEffect(() => {
     getAllBookings();
-  }, []);
+  }, [user]);
   return !isLoading ? (
     <div>
       <Title text1="Total de" text2="Reservas" />
@@ -32,18 +50,18 @@ const ListBookings = () => {
               <th className='p-2 font-medium'>Valor</th>
             </tr>
           </thead>
-            <tbody className='text-sm font-light'>
-                {bookings.map((item,index)=>(
-                    <tr key={index} className='border-b border-primary/20 bg-primary/5 even:bg-primary/10'>
-                        <td className='p-2 min-w-45 pl-5'>{item.user.name}</td>
-                        <td className='p-2'>{item.show.movie.title}</td>
-                        <td className='p-2'>{new Date(item.show.showDateTime).toLocaleDateString() }{" "}
-                          {new Date(item.show.showDateTime).toLocaleTimeString("pt-BR",{hour12:false,hour:"2-digit",minute:"2-digit"})}</td>
-                        <td className='p-2'>{Object.keys(item.bookedSeats).map(seat=>item.bookedSeats[seat]).join(", ")}</td>
-                        <td className='p-2'>{currency} {item.amount}</td>
-                    </tr>
-                ))}
-            </tbody>
+          <tbody className='text-sm font-light'>
+            {bookings.map((item, index) => (
+              <tr key={index} className='border-b border-primary/20 bg-primary/5 even:bg-primary/10'>
+                <td className='p-2 min-w-45 pl-5'>{item.user.name}</td>
+                <td className='p-2'>{item.show.movie.title}</td>
+                <td className='p-2'>{new Date(item.show.showDateTime).toLocaleDateString()}{" "}
+                  {new Date(item.show.showDateTime).toLocaleTimeString("pt-BR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</td>
+                <td className='p-2'>{Object.keys(item.bookedSeats).map(seat => item.bookedSeats[seat]).join(", ")}</td>
+                <td className='p-2'>{currency} {item.amount}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

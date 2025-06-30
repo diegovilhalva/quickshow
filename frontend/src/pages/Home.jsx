@@ -1,6 +1,6 @@
 import HeroSection from "../components/HeroSection"
 import TrailerSection from "../components/TrailerSection"
-import FeaturedSection from "./FeaturedSection"
+import FeaturedSection from "../components/FeaturedSection"
 
 
 const Home = () => {

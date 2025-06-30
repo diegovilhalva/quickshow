@@ -1,36 +1,17 @@
 import { ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router"
-import BlurCircle from "../components/BlurCircle"
+import BlurCircle from "./BlurCircle"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
-import MovieCard from "../components/MovieCard"
+import MovieCard from "./MovieCard"
+import { userAppContext } from "../context/AppContext"
 
 const FeaturedSection = () => {
   const navigate = useNavigate()
-  const [featuredMovies, setFeaturedMovies] = useState([])
-
-  useEffect(() => {
-    (async function fetchMovies() {
-      try {
-        const res = await axios.get(`${TMDB_BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=pt-BR&page=1`)
-        const topEight = res.data.results.slice(0, 8)
-
-        const details = await Promise.all(
-          topEight.map((movie) =>
-            axios
-              .get(`${TMDB_BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&language=pt-BR`)
-              .then((res) => res.data)
-          )
-        )
-
-        setFeaturedMovies(details)
-      } catch (err) {
-        console.error("Erro ao buscar filmes em cartaz:", err)
-      }
-    })()
-  }, [])
-
+  const {shows} = userAppContext()
+  
+  console.log(shows)
   return (
     <div className="px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden">
       <div className="relative flex items-center justify-between pt-20 pb-20">
@@ -45,8 +26,8 @@ const FeaturedSection = () => {
       </div>
 
       <div className="flex flex-wrap max-sm:justify-center gap-8 mt-8">
-        {featuredMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+        {shows.map((movie) => (
+          <MovieCard key={movie.id} movie={movie.movie} />
         ))}
       </div>
 

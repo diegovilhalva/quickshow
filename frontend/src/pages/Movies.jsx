@@ -4,41 +4,19 @@ import MovieCard from "../components/MovieCard"
 import BlurCircle from "../components/BlurCircle"
 import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
 import MovieCardSkeleton from "../components/MovieCardSkeleton"
+import { userAppContext } from "../context/AppContext"
 
 const Movies = () => {
-  const [movies, setMovies] = useState([])
-  const [loading, setLoading] = useState(true)
+
+  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-
-
+  const { shows,totalPages,setTotalPages,fetchShows } = userAppContext()
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      setLoading(true)
-      try {
-
-        const res = await axios.get(`${TMDB_BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=pt-BR&page=${page}`)
-        const nowPlaying = res.data.results
-        const details = await Promise.all(
-          nowPlaying.map((movie) =>
-            axios
-              .get(`${TMDB_BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&language=pt-BR`)
-              .then((res) => res.data)
-          )
-        )
-        setMovies(details)
-        setTotalPages(res.data.total_pages)
-      } catch (error) {
-        console.error("Erro ao buscar filmes:", error)
-        setMovies([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchMovies()
+    setLoading(true)
+    fetchShows(page).finally(() => setLoading(false))
   }, [page])
+
 
   const nextPage = () => {
     if (page < totalPages) setPage(page + 1)
@@ -61,11 +39,11 @@ const Movies = () => {
             <MovieCardSkeleton key={index} />
           ))}
         </div>
-      ) : movies.length > 0 ? (
+      ) : shows.length > 0  ? (
         <>
           <div className="flex flex-wrap max-sm:justify-center gap-8">
-            {movies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
+            {shows.map((movie) => (
+              <MovieCard key={movie._id} movie={movie.movie} />
             ))}
           </div>
 
@@ -88,7 +66,7 @@ const Movies = () => {
             </button>
           </div>
         </>
-      ) : (
+      ) : !loading && shows.length === 0 && (
         <p className="text-center my-20 text-red-400">Não foi possível carregar os filmes.</p>
       )}
     </div>
