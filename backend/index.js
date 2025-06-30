@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:5173"] }));
 app.use(clerkMiddleware())
 
 app.get("/", (req, res) => {
@@ -24,7 +24,7 @@ app.use("/api/inngest", serve({ client: inngest, functions }))
 app.use("/api/show", showRoutes)
 app.use("/api/booking", bookingRoutes)
 app.use("/api/admin", adminRoutes)
-app.use("/api/user",userRoutes)
+app.use("/api/user", userRoutes)
 
 const startServer = async () => {
   try {

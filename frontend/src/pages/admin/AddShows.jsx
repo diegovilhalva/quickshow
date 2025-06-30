@@ -6,10 +6,11 @@ import { kConverter } from '../../lib/KConverter';
 import axios from 'axios';
 import { API_KEY, apiEndpoint, TMDB_BASE_URL } from '../../lib/constants';
 import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/clerk-react';
 
 const AddShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
-
+  const { getToken } = useAuth()
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [dateTimeSelection, setDateTimeSelection] = useState({});
@@ -82,6 +83,10 @@ const AddShows = () => {
         movieId: selectedMovie,
         showPrice: Number(showPrice),
         showsInput
+      },{
+        headers: {
+          Authorization:`Bearer ${await getToken()}`
+        }
       });
       toast.success(res.data.message);
       // limpa formulário

@@ -3,7 +3,7 @@ import Show from "../models/show.model.js"
 import User from "../models/user.model.js"
 
 export const isAdmin = async (req, res) => {
-    return res.status(200).json({ success: true, isAdmin: true })
+     res.status(200).json({ success: true, isAdmin: true })
 }
 
 

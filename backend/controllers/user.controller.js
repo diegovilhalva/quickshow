@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/express"
-import Booking from "../models/booking.model"
+import Booking from "../models/booking.model.js"
 import Movie from "../models/movie.model.js"
 
 
@@ -20,7 +20,7 @@ export const getUserBookings = async (req, res) => {
 
 
 
-export const updateFavorite = async (res, res) => {
+export const updateFavorite = async (req, res) => {
     try {
         const { movieId } = req.body
         const userId = req.auth().userId

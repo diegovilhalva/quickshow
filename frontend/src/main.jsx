@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router"
 import { ClerkProvider } from "@clerk/clerk-react"
 import { ptBR } from "@clerk/localizations"
 import { dark } from '@clerk/themes'
+import { AppProvider } from './context/AppContext.jsx'
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 if (!PUBLISHABLE_KEY) {
@@ -21,7 +22,9 @@ createRoot(document.getElementById('root')).render(
 
   }}>
     <BrowserRouter>
-      <App />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </BrowserRouter>
   </ClerkProvider>
 
