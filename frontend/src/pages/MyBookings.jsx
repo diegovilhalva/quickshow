@@ -6,6 +6,7 @@ import { userAppContext } from "../context/AppContext"
 import axios from "axios"
 import { apiEndpoint } from "../lib/constants"
 import Loading from "../components/Loading"
+import { Link } from "react-router"
 const MyBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY
   const [bookings, setBookings] = useState([])
@@ -44,7 +45,7 @@ const MyBookings = () => {
       {bookings.map((booking) => (
         <div key={booking.id} className="flex flex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl">
           <div className="flex flex-col md:flex-row">
-            <img src={`https://image.tmdb.org/t/p/original${booking.show.movie.poster_path}`} alt={booking.show.movie.title} className="md:max-w-45 aspect-ratio h-auto object-cover object-bottom rounded" />
+            <img src={`https://image.tmdb.org/t/p/original${booking.show.movie.poster}`} alt={booking.show.movie.title} className="md:max-w-45 aspect-ratio h-auto object-cover object-bottom rounded" />
             <div className="flex flex-col p-4">
               <p className="text-lg font-semibold">{booking.show.movie.title}</p>
               <p className="text-gray-400 text-sm">{formatRuntime(booking.show.movie.runtime)}</p>
@@ -61,11 +62,11 @@ const MyBookings = () => {
               {booking.isPaid ? (
                 <span className="text-green-500 font-medium">Pago</span>
               ) : (
-                <button className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">Pagar</button>
+                <Link to={booking.paymentLink} className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">Pagar</Link>
               )}
-
             </div>
             <div className="text-sm">
+               <p className='text-2xl font-semibold mb-3'>{currency}{booking.amount},00</p>
               <p><span className="text-gray-400">Total de ingressos:</span> {booking.bookedSeats.length}</p>
               <p><span className="text-gray-400">Números dos assentos: </span>
                 {booking.bookedSeats.join(", ")}</p>

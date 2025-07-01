@@ -1,3 +1,4 @@
+import { inngest } from "../inngest/index.js"
 import Booking from "../models/booking.model.js"
 import Show from "../models/show.model.js"
 import stripe from "stripe"
@@ -9,7 +10,8 @@ export const checkSeatsAvailiability = async (showId, selectedSeats) => {
 
         const occupiedSeats = showData.occupiedSeats
 
-        const isAnySeatTaken = selectedSeats.some((seat) => occupiedSeats[seat])
+        const isAnySeatTaken = selectedSeats.some(seat => Object.keys(occupiedSeats).includes(seat))
+
 
 
         return !isAnySeatTaken
@@ -27,7 +29,6 @@ export const createBooking = async (req, res) => {
         const { userId } = req.auth()
         const { showId, selectedSeats } = req.body
         const { origin } = req.headers
-
         const isAvailable = await checkSeatsAvailiability(showId, selectedSeats)
 
         if (!isAvailable) {
@@ -59,14 +60,14 @@ export const createBooking = async (req, res) => {
                 product_data: {
                     name: showData.movie.title
                 },
-                unit_amout: Math.floor(booking.amount) * 100
+                unit_amount: Math.floor(booking.amount) * 100
             },
             quantity: 1
         }]
 
-        const session = await stripeInstance.checkout.sessions({
+        const session = await stripeInstance.checkout.sessions.create({
             success_url: `${origin}/loading/my-bookings`,
-            cancel_url: `${oringin}/my-boolings`,
+            cancel_url: `${origin}/my-bookings`,
             line_items: lineItems,
             mode: 'payment',
             metadata: {
@@ -78,6 +79,13 @@ export const createBooking = async (req, res) => {
         booking.paymentLink = session.url
 
         await booking.save()
+
+        await inngest.send({
+            name: "app/checkpayment",
+            data: {
+                bookingId: booking._id.toString()
+            }
+        })
 
         return res.status(201).json({ success: true, url: session.url })
 

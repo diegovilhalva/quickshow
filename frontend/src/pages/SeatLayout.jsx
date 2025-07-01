@@ -49,6 +49,21 @@ const SeatLayout = () => {
     }
     setSelectedSeats(prev => prev.includes(seatId) ? prev.filter(seat => seat !== seatId) : [...prev, seatId])
   }
+
+
+
+  const getOccupiedseats = async () => {
+    try {
+      const { data } = await axios.get(`${apiEndpoint}/booking/seats/${selectedTime.showId}`)
+      if (data.success) {
+        setOccupiedSeats(data.occupiedSeats)
+      } else {
+        toast.error("Erro ao carregar assentos")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const renderSeats = (row, count = 9) => (
     <div key={row} className="flex gap-2 mt-2">
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -64,19 +79,6 @@ const SeatLayout = () => {
     </div>
   )
 
-  const getOccupiedseats = async () => {
-    try {
-      const { data } = await axios.get(`${apiEndpoint}/booking/seats/${selectedTime.showId}`)
-      if (data.success) {
-        setOccupiedSeats(data.occupiedSeats)
-      } else {
-        toast.error("Erro ao carregar assentos")
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const bookTickects = async () => {
     try {
       if (!user) {
@@ -85,7 +87,7 @@ const SeatLayout = () => {
       if (!selectedTime || !selectedSeats.length) {
         return toast.error("Por favor, selecione o horário e assento")
       }
-      const { data } = await axios.post(`${apiEndpoint}/booking/create`, { showid: selectedTime.showId, selectedSeats }, {
+      const { data } = await axios.post(`${apiEndpoint}/booking/create`, { showId: selectedTime.showId, selectedSeats }, {
         headers: {
           Authorization: `Bearer ${await getToken()}`
         }
@@ -98,7 +100,7 @@ const SeatLayout = () => {
         toast.error(data.message)
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.response.data.message)
     }
   }
   useEffect(() => {
