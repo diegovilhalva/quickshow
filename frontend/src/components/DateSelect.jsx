@@ -15,7 +15,7 @@ const getNextDays = (n = 12) => {
   return days
 }
 
-const DateSelect = ({ id }) => {
+const DateSelect = ({ id, availableDates }) => {
   const [selected, setSelected] = useState(null)
   const navigate = useNavigate()
   const dates = getNextDays(12)
@@ -38,17 +38,22 @@ const DateSelect = ({ id }) => {
             <span className="grid grid-cols-3 md:flex flex-wrap md:max-w-lg gap-4">
               {dates.map((date) => {
                 const dateString = date.toISOString().split("T")[0]
+                const isAvailable = availableDates[dateString] && availableDates[dateString].length > 0
                 return (
                   <button
-                    onClick={() => setSelected(dateString)}
+                    onClick={() => isAvailable && setSelected(dateString)}
                     key={dateString}
-                    className={`flex flex-col items-center justify-center h-14 w-14 aspect-square rounded cursor-pointer ${selected === dateString ? "bg-primary text-white" : "border border-primary/70"}`}
+                    disabled={!isAvailable}
+                    className={`flex flex-col items-center justify-center h-14 w-14 aspect-square rounded cursor-pointer transition-all
+        ${selected === dateString ? "bg-primary text-white" : "border"}
+        ${isAvailable ? "border-primary/70 hover:bg-primary/10" : "opacity-50 cursor-not-allowed"}`}
                   >
                     <span>{date.getDate()}</span>
                     <span>{date.toLocaleDateString("pt-BR", { month: "short" })}</span>
                   </button>
                 )
               })}
+
             </span>
             <ChevronRightIcon width={28} />
           </div>

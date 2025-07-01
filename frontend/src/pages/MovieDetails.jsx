@@ -17,8 +17,10 @@ const MovieDetails = () => {
   const [movie, setMovie] = useState({})
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const { shows, getToken, fetchFavoriteMovies,user,favoriteMovies} = userAppContext()
+  const { shows, getToken, fetchFavoriteMovies, user, favoriteMovies } = userAppContext()
   const [details, setDetails] = useState([])
+  const [availableDates, setAvailableDates] = useState({})
+
   useEffect(() => {
     (async function fetchMovie() {
       try {
@@ -26,7 +28,7 @@ const MovieDetails = () => {
         const res = await axios.get(`${apiEndpoint}/show/${id}`)
 
         setMovie(res.data.movie)
-
+        setAvailableDates(res.data.dateTime)
       } catch (error) {
         console.log(error)
       } finally {
@@ -126,7 +128,7 @@ const MovieDetails = () => {
           ))}
         </div>
       </div>
-      <DateSelect id={movie._id} dateTime={movie.dateTime} />
+      <DateSelect id={movie._id} availableDates={availableDates} />
       <p className="text-lg font-medium mt-20 mb-8">
         Você também poderá gostar
       </p>
