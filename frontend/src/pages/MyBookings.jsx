@@ -2,17 +2,33 @@ import { useEffect, useState } from "react"
 import { dummyBookingData } from "../assets/assets"
 import BlurCircle from "../components/BlurCircle"
 import { formatRuntime } from "../lib/functions"
-
-
+import { userAppContext } from "../context/AppContext"
+import axios from "axios"
+import { apiEndpoint } from "../lib/constants"
+import Loading from "../components/Loading"
 const MyBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY
   const [bookings, setBookings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-
+  const { getToken, user } = userAppContext()
 
   const getMyBookings = async () => {
-    setBookings(dummyBookingData)
-    setIsLoading(false)
+    try {
+      const { data } = await axios.get(`${apiEndpoint}/user/bookings`, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`
+        }
+      })
+      if (data.success) {
+        setBookings(data.bookings)
+      }
+
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
   useEffect(() => {
     getMyBookings()
@@ -28,7 +44,7 @@ const MyBookings = () => {
       {bookings.map((booking) => (
         <div key={booking.id} className="flex flex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl">
           <div className="flex flex-col md:flex-row">
-            <img src={booking.show.movie.poster_path} alt={booking.show.movie.title} className="md:max-w-45 aspect-ratio h-auto object-cover object-bottom rounded" />
+            <img src={`https://image.tmdb.org/t/p/original${booking.show.movie.poster_path}`} alt={booking.show.movie.title} className="md:max-w-45 aspect-ratio h-auto object-cover object-bottom rounded" />
             <div className="flex flex-col p-4">
               <p className="text-lg font-semibold">{booking.show.movie.title}</p>
               <p className="text-gray-400 text-sm">{formatRuntime(booking.show.movie.runtime)}</p>
@@ -57,8 +73,13 @@ const MyBookings = () => {
           </div>
         </div>
       ))}
+      {bookings.length === 0 && (
+        <div className="flex items-center justify-center mt-30">
+          <p className="text-3xl font-bold">Ainda não há ingressos</p>
+        </div>
+      )}
     </div>
-  ) : <div>Carregando...</div>
+  ) : <Loading />
 }
 
 export default MyBookings

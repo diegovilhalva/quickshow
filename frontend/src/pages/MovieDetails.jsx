@@ -9,6 +9,7 @@ import DateSelect from "../components/DateSelect"
 import MovieCard from "../components/MovieCard"
 import MovieDetailsSkeleton from "../components/MovieDetailsSkeleton"
 import { userAppContext } from "../context/AppContext"
+import toast from "react-hot-toast"
 
 
 const MovieDetails = () => {
@@ -16,7 +17,7 @@ const MovieDetails = () => {
   const [movie, setMovie] = useState({})
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const { shows, getToken, } = userAppContext()
+  const { shows, getToken, fetchFavoriteMovies,user,favoriteMovies} = userAppContext()
   const [details, setDetails] = useState([])
   useEffect(() => {
     (async function fetchMovie() {
@@ -25,7 +26,7 @@ const MovieDetails = () => {
         const res = await axios.get(`${apiEndpoint}/show/${id}`)
 
         setMovie(res.data.movie)
-       
+
       } catch (error) {
         console.log(error)
       } finally {
@@ -49,8 +50,26 @@ const MovieDetails = () => {
       fetchDetails();
     }
   }, [movie]);
-  
-  const  recommendedMovies = shows.filter((show) => show.movie._id !== id).slice(0,4)
+
+  const handleFavorite = async () => {
+    try {
+      if (!user) return toast.error("Faça o login para adicionar aos favoritos")
+      const { data } = await axios.post(`${apiEndpoint}/user/update-favorite`, { movieId: id }, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`
+        }
+      })
+
+      if (data.success) {
+        await fetchFavoriteMovies()
+        toast.success(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const recommendedMovies = shows.filter((show) => show.movie._id !== id).slice(0, 4)
   const genres = details.genres?.map((g) => g.name).join(" | ")
   const trailer = details.videos?.results?.find(video => video.type === "Trailer" && video.site === "YouTube")
   console.log(movie)
@@ -90,8 +109,8 @@ const MovieDetails = () => {
             )}
 
             <a href="#dateSelect" className="px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer active:scale-95">Comprar ingresso</a>
-            <button className="bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95">
-              <Heart className={`w-5 h-5 `} />
+            <button onClick={handleFavorite} className="bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95">
+              <Heart className={`w-5 h-5 ${favoriteMovies.find((movie) => movie._id === id) ? 'fill-primary text-primary' : ''}`} />
             </button>
           </div>
         </div>

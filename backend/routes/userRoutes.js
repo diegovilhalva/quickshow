@@ -4,7 +4,7 @@ import {getFavorites, getUserBookings, updateFavorite}  from "../controllers/use
 const router = express.Router()
 
 router.get("/bookings",getUserBookings)
-router.post("/updte-favorite",updateFavorite)
+router.post("/update-favorite",updateFavorite)
 router.get("/favorites",getFavorites)
 
 export default router
