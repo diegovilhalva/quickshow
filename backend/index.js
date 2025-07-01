@@ -9,9 +9,11 @@ import userRoutes from "./routes/userRoutes.js"
 import "dotenv/config";
 import connectDB from "./config/db.js";
 import { inngest, functions } from "./inngest/index.js";
+import { stripeWebhooks } from "./controllers/stripe-webhooks.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+app.use('/api/stripe',express.raw({type:"application/json"}),stripeWebhooks)
 
 app.use(express.json());
 app.use(cors({ origin: ["http://localhost:5173"] }));

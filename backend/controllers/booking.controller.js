@@ -1,5 +1,6 @@
 import Booking from "../models/booking.model.js"
 import Show from "../models/show.model.js"
+import stripe from "stripe"
 
 export const checkSeatsAvailiability = async (showId, selectedSeats) => {
     try {
@@ -50,9 +51,35 @@ export const createBooking = async (req, res) => {
 
         await showData.save()
 
-        // To do iniciar gateway de pagamento com Stripe
+        const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
 
-        return res.status(201).json({ success: true, message: "Reservado com sucesso!" })
+        const lineItems = [{
+            price_data: {
+                currency: 'brl',
+                product_data: {
+                    name: showData.movie.title
+                },
+                unit_amout: Math.floor(booking.amount) * 100
+            },
+            quantity: 1
+        }]
+
+        const session = await stripeInstance.checkout.sessions({
+            success_url: `${origin}/loading/my-bookings`,
+            cancel_url: `${oringin}/my-boolings`,
+            line_items: lineItems,
+            mode: 'payment',
+            metadata: {
+                bookingId: booking._id.toString()
+            },
+            expires_at: Math.floor(Date.now() / 1000) + 30 * 60
+        })
+
+        booking.paymentLink = session.url
+
+        await booking.save()
+
+        return res.status(201).json({ success: true, url: session.url })
 
 
     } catch (error) {
