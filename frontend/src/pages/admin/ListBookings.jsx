@@ -36,6 +36,7 @@ const ListBookings = () => {
   useEffect(() => {
     getAllBookings();
   }, [user]);
+  
   return !isLoading ? (
     <div>
       <Title text1="Total de" text2="Reservas" />
@@ -53,7 +54,7 @@ const ListBookings = () => {
           <tbody className='text-sm font-light'>
             {bookings.map((item, index) => (
               <tr key={index} className='border-b border-primary/20 bg-primary/5 even:bg-primary/10'>
-                <td className='p-2 min-w-45 pl-5'>{item.user.name}</td>
+                <td className='p-2 min-w-45 pl-5'>{item.user?.name}</td>
                 <td className='p-2'>{item.show.movie.title}</td>
                 <td className='p-2'>{new Date(item.show.showDateTime).toLocaleDateString()}{" "}
                   {new Date(item.show.showDateTime).toLocaleTimeString("pt-BR", { hour12: false, hour: "2-digit", minute: "2-digit" })}</td>

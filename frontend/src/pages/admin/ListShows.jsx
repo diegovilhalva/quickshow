@@ -22,7 +22,7 @@ const ListShows = () => {
   useEffect(() => {
     getAllShows();
   }, []);
-  console.log(shows)
+ 
   return !loading ? (
     <div>
       <Title text1="Total de" text2="Sessões" />
@@ -46,7 +46,7 @@ const ListShows = () => {
                           minute:"2-digit"
                         })}</td>
                         <td className='p-2'>{show.seatsBooked}</td>
-                        <td className='p-2'>{currency} {Object.keys(show.seatsBooked).length*show.showPrice}</td>
+                        <td className='p-2'>{currency} {show.seatsBooked *show.showPrice}</td>
                     </tr>
                 )
 
