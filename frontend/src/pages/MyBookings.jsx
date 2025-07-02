@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { dummyBookingData } from "../assets/assets"
 import BlurCircle from "../components/BlurCircle"
 import { formatRuntime } from "../lib/functions"
 import { userAppContext } from "../context/AppContext"

@@ -1,9 +1,6 @@
 import { ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router"
 import BlurCircle from "./BlurCircle"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { API_KEY, TMDB_BASE_URL } from "../lib/constants"
 import MovieCard from "./MovieCard"
 import { userAppContext } from "../context/AppContext"
 

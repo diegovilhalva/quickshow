@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dummyBookingData } from "../../assets/assets";
+
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import axios from "axios";

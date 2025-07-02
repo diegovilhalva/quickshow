@@ -1,5 +1,4 @@
-import React from 'react'
-import {dummyShowsData} from "../assets/assets"
+
 import MovieCard from '../components/MovieCard'
 import BlurCircle from '../components/BlurCircle'
 import { userAppContext } from '../context/AppContext'

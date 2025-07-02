@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
-import { API_KEY, apiEndpoint, TMDB_BASE_URL } from "../lib/constants"
+import { apiEndpoint, } from "../lib/constants"
 import { ArrowRightIcon, ClockIcon } from "lucide-react"
 import BlurCircle from "../components/BlurCircle"
 import { assets } from "../assets/assets"
