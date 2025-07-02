@@ -205,7 +205,7 @@ const sendNewShowNotifications = inngest.createFunction(
     <p>acabou de entrar em cartaz na QuickShow, e você não vai querer perder essa estreia.</p>
     <p>🎟️ Garanta seu lugar agora mesmo e prepare-se para mais uma experiência incrível no cinema.</p>
     <br/>
-    <p><a href="https://quickshow.com" style="color: #F84565; font-weight: bold;">Clique aqui para ver os horários e reservar</a></p>
+    <p><a href="https://quickshow-ebon.vercel.app" style="color: #F84565; font-weight: bold;">Clique aqui para ver os horários e reservar</a></p>
     <br/>
     <p>Nos vemos no cinema!<br/>Equipe QuickShow 🎬</p>
 </div>`;

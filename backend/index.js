@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 4000;
 app.use('/api/stripe',express.raw({type:"application/json"}),stripeWebhooks)
 
 app.use(express.json());
-app.use(cors({ origin: ["http://localhost:5173"] }));
+app.use(cors({ origin: ["http://localhost:5173","https://quickshow-ebon.vercel.app"] }));
 app.use(clerkMiddleware())
 
 app.get("/", (req, res) => {
