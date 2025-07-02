@@ -143,8 +143,5 @@ Made with ❤️ by [@diegovilhalva](https://github.com/diegovilhalva)
 
 This project is licensed under the MIT License.
 
-```
-
----
 
 
